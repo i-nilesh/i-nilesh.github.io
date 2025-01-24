@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .result {
+      margin-top: 20px;
+    }
+    #mbtiChart {
+      margin-top: 20px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>MBTI Quiz</h1>
+    <form id="quizForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" required>
+
+      <label for="city">City:</label>
+      <input type="text" id="city" required>
+
+      <label for="goals">What are your goals in life?</label>
+      <textarea id="goals" rows="4" required></textarea>
+
+      <h2>MBTI Questions</h2>
+      <p>Answer the following questions to determine your MBTI type:</p>
+
+      <label>1. Do you prefer spending time with others or alone?</label>
+      <select id="q1">
+        <option value="E">With others (Extrovert)</option>
+        <option value="I">Alone (Introvert)</option>
+      </select>
+
+      <label>2. Are you more practical or imaginative?</label>
+      <select id="q2">
+        <option value="S">Practical (Sensing)</option>
+        <option value="N">Imaginative (Intuition)</option>
+      </select>
+
+      <label>3. Do you make decisions based on logic or feelings?</label>
+      <select id="q3">
+        <option value="T">Logic (Thinking)</option>
+        <option value="F">Feelings (Feeling)</option>
+      </select>
+
+      <label>4. Do you prefer planning or being spontaneous?</label>
+      <select id="q4">
+        <option value="J">Planning (Judging)</option>
+        <option value="P">Spontaneous (Perceiving)</option>
+      </select>
+
+      <label>5. Are you more outgoing or reserved?</label>
+      <select id="q5">
+        <option value="E">Outgoing (Extrovert)</option>
+        <option value="I">Reserved (Introvert)</option>
+      </select>
+
+      <label>6. Do you focus on details or the big picture?</label>
+      <select id="q6">
+        <option value="S">Details (Sensing)</option>
+        <option value="N">Big picture (Intuition)</option>
+      </select>
+
+      <label>7. Are you more analytical or empathetic?</label>
+      <select id="q7">
+        <option value="T">Analytical (Thinking)</option>
+        <option value="F">Empathetic (Feeling)</option>
+      </select>
+
+      <label>8. Do you prefer structure or flexibility?</label>
+      <select id="q8">
+        <option value="J">Structure (Judging)</option>
+        <option value="P">Flexibility (Perceiving)</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="result" id="result">
+      <h2>Your MBTI Type:</h2>
+      <p id="mbtiType"></p>
+      <div id="mbtiChart"></div>
+    </div>
+  </div>
+
+  <script>
+    let mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+    document.getElementById('quizForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Reset scores
+      mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+      // Calculate scores based on answers
+      for (let i = 1; i <= 8; i++) {
+        const answer = document.getElementById(`q${i}`).value;
+        mbtiScores[answer]++;
+      }
+
+      // Determine MBTI type
+      const mbtiType =
+        (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
+        (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
+        (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
+        (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
+
+      // Display result
+      document.getElementById('mbtiType').textContent = mbtiType;
+      document.getElementById('result').style.display = 'block';
+
+      // Visualize MBTI type
+      visualizeMBTI();
+    });
+
+    function visualizeMBTI() {
+      const canvas = new p5((p) => {
+        p.setup = () => {
+          p.createCanvas(400, 300);
+          p.background(240);
+
+          const spectrums = [
+            { name: 'Introvert - Extrovert', value: mbtiScores.E / (mbtiScores.E + mbtiScores.I) },
+            { name: 'Sensing - Intuition', value: mbtiScores.S / (mbtiScores.S + mbtiScores.N) },
+            { name: 'Thinking - Feeling', value: mbtiScores.T / (mbtiScores.T + mbtiScores.F) },
+            { name: 'Judging - Perceiving', value: mbtiScores.J / (mbtiScores.J + mbtiScores.P) },
+          ];
+
+          const barHeight = 40;
+          const margin = 20;
+
+          spectrums.forEach((spectrum, index) => {
+            const y = margin + index * (barHeight + margin);
+            p.fill(200);
+            p.rect(100, y, 200, barHeight);
+            p.fill(0);
+            p.textAlign(p.LEFT, p.CENTER);
+            p.text(spectrum.name.split(' - ')[0], 10, y + barHeight / 2);
+            p.textAlign(p.RIGHT, p.CENTER);
+            p.text(spectrum.name.split(' - ')[1], 390, y + barHeight / 2);
+            p.fill(100, 150, 255);
+            p.rect(100, y, 200 * spectrum.value, barHeight);
+          });
+        };
+      }, 'mbtiChart');
+    }
+  </script>
+</body>
+</html>
