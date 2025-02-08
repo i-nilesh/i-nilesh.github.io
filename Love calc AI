@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ffafbd 10%, #ffc3a0 100%);
+            overflow: hidden;
+            animation: backgroundAnimation 10s infinite alternate;
+        }
+        @keyframes backgroundAnimation {
+            0% { background: linear-gradient(135deg, #ffafbd 10%, #ffc3a0 100%); }
+            100% { background: linear-gradient(135deg, #ffc8dd 10%, #ffffff 100%); }
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px 70px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
+            border: 3px solid #ff69b4;
+            position: relative;
+            overflow: hidden;
+        }
+        h1 {
+            color: #ff69b4;
+            font-size: 3em;
+            margin-bottom: 30px;
+            position: relative;
+            animation: colorChange 5s infinite;
+        }
+        @keyframes colorChange {
+            0% { color: #ff69b4; }
+            50% { color: #ff1493; }
+            100% { color: #ff69b4; }
+        }
+        h1::after {
+            content: '❤️';
+            font-size: 2em;
+            position: absolute;
+            right: -40px;
+            top: 10px;
+            animation: heartBeat 1s infinite;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        input {
+            padding: 18px;
+            margin: 15px 0;
+            border: 3px solid #ffb6c1;
+            border-radius: 15px;
+            width: calc(100% - 36px);
+            font-size: 1.2em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        input:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+            outline: none;
+        }
+        button {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 15px;
+            background-color: #ff69b4;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 25px;
+        }
+        button:hover {
+            background-color: #ff1493;
+            transform: scale(1.1);
+        }
+        button::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        button:active::after {
+            opacity: 1;
+        }
+        #result {
+            margin-top: 35px;
+            font-size: 2em;
+            color: #333;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .emoji {
+            font-size: 2.5em;
+            margin-top: 20px;
+            display: block;
+            animation: emojiBounce 1s infinite alternate;
+        }
+        @keyframes emojiBounce {
+            to { transform: translateY(-10px); }
+        }
+        .suggestion {
+            margin-top: 25px;
+            font-size: 1.7em;
+            color: #555;
+            animation: fadeInUp 2s ease-in-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .suggestion-highlight {
+            color: #ff69b4;
+            font-weight: bold;
+        }
+        .hearts {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #ff69b4;
+            border-radius: 50%;
+            top: -20px;
+            animation: floatHearts 6s infinite ease-in-out;
+        }
+        @keyframes floatHearts {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-150px) rotate(360deg); opacity: 0; }
+        }
+        .hearts:nth-child(2) {
+            left: 20%;
+            animation-delay: 1s;
+        }
+        .hearts:nth-child(3) {
+            left: 40%;
+            animation-delay: 2s;
+        }
+        .hearts:nth-child(4) {
+            left: 60%;
+            animation-delay: 3s;
+        }
+        .hearts:nth-child(5) {
+            left: 80%;
+            animation-delay: 4s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hearts"></div>
+        <div class="hearts"></div>
+        <div class="hearts"></div>
+        <div class="hearts"></div>
+        <div class="hearts"></div>
+        <h1>Love Calculator</h1>
+        <input type="text" id="name1" placeholder="Enter your name">
+        <input type="text" id="name2" placeholder="Enter your partner's name">
+        <button onclick="calculateLove()">Calculate Love</button>
+        <div id="result"></div>
+        <div id="emoji-container" class="emoji"></div>
+        <div id="suggestion-container" class="suggestion"></div>
+    </div>
+
+    <script>
+        function calculateLove() {
+            const name1 = document.getElementById('name1').value.trim();
+            const name2 = document.getElementById('name2').value.trim();
+            if (name1 && name2) {
+                const lovePercentage = Math.floor(Math.random() * 100) + 1;
+                const resultElement = document.getElementById('result');
+                resultElement.innerText = `${name1} and ${name2}'s love percentage is ${lovePercentage}%!`;
+                resultElement.style.animation = 'none';
+                setTimeout(() => {
+                    resultElement.style.animation = '';
+                }, 10);
+
+                // Add emoji and suggestion based on percentage
+                const emojiContainer = document.getElementById('emoji-container');
+                const suggestionContainer = document.getElementById('suggestion-container');
+                if (lovePercentage > 70) {
+                    emojiContainer.innerText = '❤️';
+                    suggestionContainer.innerHTML = 'You two are a <span class="suggestion-highlight">great match</span>! Go for it!';
+                } else if (lovePercentage > 40) {
+                    emojiContainer.innerText = '😊';
+                    suggestionContainer.innerHTML = 'There is <span class="suggestion-highlight">potential</span>! Give it a try and see how it goes.';
+                } else {
+                    emojiContainer.innerText = '😢';
+                    suggestionContainer.innerHTML = 'It might be <span class="suggestion-highlight">challenging</span>. Consider staying friends.';
+                }
+            } else {
+                document.getElementById('result').innerText = 'Please enter both names.';
+            }
+        }
+    </script>
+</body>
+</html>
